@@ -57,6 +57,27 @@ App.PropertyController = Ember.ObjectController.extend({
   }
 });
 
+App.ScrollMemory = Ember.Mixin.create({
+  restoreScroll: function() {
+    var y = this.get('controller.scrollTop') || 0;
+
+    $(document).scrollTop(y);
+  }.on('didInsertElement'),
+
+  storeScroll: function() {
+    this.set('controller.scrollTop', $(document).scrollTop());
+  }.on('willDestroyElement')
+});
+
+App.ScrollReset = Ember.Mixin.create({
+  resetScroll: function() {
+    $(document).scrollTop(0);
+  }.on('didInsertElement')
+});
+
+App.IndexView = Ember.View.extend(App.ScrollMemory);
+App.PropertyView = Ember.View.extend(App.ScrollReset);
+
 Ember.Handlebars.helper('format-number', function(number, format) {
   return numeral(number).format(format);
 });
